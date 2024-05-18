@@ -37,21 +37,7 @@ jobs:
           repo_dir=$(pwd)
           mkdir ../downloads/
           cd ../downloads/
-          curl https://d.apkpure.com/b/APK/com.blizzard.wtcg.hearthstone?version=latest \
-            -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
-            -H 'Accept-Language: ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7,vi;q=0.6' \
-            -H 'Cache-Control: no-cache' \
-            -H 'Connection: keep-alive' \
-            -H 'Pragma: no-cache' \
-            -H 'Sec-Fetch-Dest: document' \
-            -H 'Sec-Fetch-Mode: navigate' \
-            -H 'Sec-Fetch-Site: none' \
-            -H 'Sec-Fetch-User: ?1' \
-            -H 'Upgrade-Insecure-Requests: 1' \
-            -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' \
-            -H 'sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"' \
-            -H 'sec-ch-ua-mobile: ?0' \
-            -H 'sec-ch-ua-platform: "macOS"'
+          curl  -c cookiejar -g -O -J -L -F "j_username=username" -F "j_password=password" https://d.apkpure.com/b/APK/com.blizzard.wtcg.hearthstone?version=latest
           file=$(find . -maxdepth 1 -type f -name '*_*.*.*_*' -print -quit)
           old_apk_name=$(basename "$file")
           version=$(echo "$old_apk_name" | grep -oE '_[0-9]+\.[0-9]+\.[0-9]+' | cut -d'_' -f2)
