@@ -37,7 +37,7 @@ jobs:
           repo_dir=$(pwd)
           mkdir ../downloads/
           cd ../downloads/
-          curl '${{ secrets.APK_URL }}' \
+          curl https://d.apkpure.com/b/APK/com.blizzard.wtcg.hearthstone?version=latest \
             -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
             -H 'Accept-Language: ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7,vi;q=0.6' \
             -H 'Cache-Control: no-cache' \
@@ -51,11 +51,13 @@ jobs:
             -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' \
             -H 'sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"' \
             -H 'sec-ch-ua-mobile: ?0' \
-            -H 'sec-ch-ua-platform: "macOS"' \
-            -o hs.apk
-          old_apk_name="hs.apk"
-          apk_name="hs.apk"
-          mixmod_apk_name="HearthstoneMixMod_${{ secrets.VERSION }}.apk"
+            -H 'sec-ch-ua-platform: "macOS"'
+          file=$(find . -maxdepth 1 -type f -name '*_*.*.*_*' -print -quit)
+          old_apk_name=$(basename "$file")
+          version=$(echo "$old_apk_name" | grep -oE '_[0-9]+\.[0-9]+\.[0-9]+' | cut -d'_' -f2)
+          echo "The version is: $version"  =
+          apk_name="hs${version}.apk"
+          mixmod_apk_name="HearthstoneMixMod_${version}.apk"
           echo "apk_name=${apk_name}" >> $GITHUB_ENV
           echo "mixmod_apk_name=${mixmod_apk_name}" >> $GITHUB_ENV
           apk_folder_name=${apk_name%.*}
@@ -167,6 +169,6 @@ jobs:
           mv ${{steps.sign_app.outputs.signedReleaseFile}} ../Release/signed/${{ env.mixmod_apk_name }}
       - uses: "ncipollo/release-action@v1"
         with:
-          tag: "${{ secrets.VERSION }}"
+          tag: "${version}"
           name: "AndroidMixMod"
           artifacts: "../Release/signed/${{ env.mixmod_apk_name }}"
